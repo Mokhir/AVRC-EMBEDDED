@@ -1,0 +1,309 @@
+
+IR PULSE IAF RECEIVER ATTINY13A.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000001a8  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000002  00800060  000001a8  0000023c  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          0000000c  00800062  00800062  0000023e  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  0000023e  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000270  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 00000028  00000000  00000000  000002ac  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   0000024d  00000000  00000000  000002d4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 00000117  00000000  00000000  00000521  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   00000155  00000000  00000000  00000638  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  00000054  00000000  00000000  00000790  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    00000240  00000000  00000000  000007e4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    000000a9  00000000  00000000  00000a24  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000018  00000000  00000000  00000acd  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	09 c0       	rjmp	.+18     	; 0x14 <__ctors_end>
+   2:	21 c0       	rjmp	.+66     	; 0x46 <__bad_interrupt>
+   4:	74 c0       	rjmp	.+232    	; 0xee <__vector_2>
+   6:	1f c0       	rjmp	.+62     	; 0x46 <__bad_interrupt>
+   8:	1e c0       	rjmp	.+60     	; 0x46 <__bad_interrupt>
+   a:	1d c0       	rjmp	.+58     	; 0x46 <__bad_interrupt>
+   c:	1c c0       	rjmp	.+56     	; 0x46 <__bad_interrupt>
+   e:	1b c0       	rjmp	.+54     	; 0x46 <__bad_interrupt>
+  10:	1a c0       	rjmp	.+52     	; 0x46 <__bad_interrupt>
+  12:	19 c0       	rjmp	.+50     	; 0x46 <__bad_interrupt>
+
+00000014 <__ctors_end>:
+  14:	11 24       	eor	r1, r1
+  16:	1f be       	out	0x3f, r1	; 63
+  18:	cf e9       	ldi	r28, 0x9F	; 159
+  1a:	cd bf       	out	0x3d, r28	; 61
+
+0000001c <__do_copy_data>:
+  1c:	10 e0       	ldi	r17, 0x00	; 0
+  1e:	a0 e6       	ldi	r26, 0x60	; 96
+  20:	b0 e0       	ldi	r27, 0x00	; 0
+  22:	e8 ea       	ldi	r30, 0xA8	; 168
+  24:	f1 e0       	ldi	r31, 0x01	; 1
+  26:	02 c0       	rjmp	.+4      	; 0x2c <__do_copy_data+0x10>
+  28:	05 90       	lpm	r0, Z+
+  2a:	0d 92       	st	X+, r0
+  2c:	a2 36       	cpi	r26, 0x62	; 98
+  2e:	b1 07       	cpc	r27, r17
+  30:	d9 f7       	brne	.-10     	; 0x28 <__do_copy_data+0xc>
+
+00000032 <__do_clear_bss>:
+  32:	20 e0       	ldi	r18, 0x00	; 0
+  34:	a2 e6       	ldi	r26, 0x62	; 98
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	01 c0       	rjmp	.+2      	; 0x3c <.do_clear_bss_start>
+
+0000003a <.do_clear_bss_loop>:
+  3a:	1d 92       	st	X+, r1
+
+0000003c <.do_clear_bss_start>:
+  3c:	ae 36       	cpi	r26, 0x6E	; 110
+  3e:	b2 07       	cpc	r27, r18
+  40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
+  42:	02 d0       	rcall	.+4      	; 0x48 <main>
+  44:	af c0       	rjmp	.+350    	; 0x1a4 <_exit>
+
+00000046 <__bad_interrupt>:
+  46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
+
+00000048 <main>:
+int maxCharge = 1000;
+
+
+
+int main(void){
+	DDRB = 0b011100; //set pins 2, 3 , 4 as outputs
+  48:	8c e1       	ldi	r24, 0x1C	; 28
+  4a:	87 bb       	out	0x17, r24	; 23
+	PORTB = PORTB | 0b000100; _delay_ms(3); PORTB = PORTB & ~0b000100; _delay_ms(50);
+	PORTB = PORTB | 0b000100; _delay_ms(3); PORTB = PORTB & ~0b000100;
+	*/
+	
+	//Pin Change Interrupt Config
+	SREG  =  SREG | 0b10000000;	//sreg bit 7 enables global interrupts
+  4c:	8f b7       	in	r24, 0x3f	; 63
+  4e:	80 68       	ori	r24, 0x80	; 128
+  50:	8f bf       	out	0x3f, r24	; 63
+	MCUCR = MCUCR | 0b00000000;  //enable logical change trigger MCU control reg 
+  52:	85 b7       	in	r24, 0x35	; 53
+  54:	85 bf       	out	0x35, r24	; 53
+	//Dec2015 - datasheet indicates MCUCR only affects sleep-mode and power reg stuff.
+	GIMSK = 0b00100000;  // Set PCIE to enable pin change interrupts
+  56:	80 e2       	ldi	r24, 0x20	; 32
+  58:	8b bf       	out	0x3b, r24	; 59
+	PCMSK=0b00000011;  //enable pin change interrupts on pcint0 and pcint1
+  5a:	83 e0       	ldi	r24, 0x03	; 3
+  5c:	85 bb       	out	0x15, r24	; 21
+	//Set timer 0 to run with 256 scaled clock-cycles prescaler 
+	TCCR0A = TCCR0A; // no change to default settings
+  5e:	8f b5       	in	r24, 0x2f	; 47
+  60:	8f bd       	out	0x2f, r24	; 47
+	TCCR0B = TCCR0B | 0b00000101; // CS02 = 1 AND CS00 = 1 for 1024 prescalar
+  62:	83 b7       	in	r24, 0x33	; 51
+  64:	85 60       	ori	r24, 0x05	; 5
+  66:	83 bf       	out	0x33, r24	; 51
+	//2.4ms sony header pulse gives 22.5 counts at 9.6mhz/1024 
+	sei();
+  68:	78 94       	sei
+			charge = 0;
+		}
+		*/
+		
+		/* Option B */
+		charge++; // [increment of 0.5ms]
+  6a:	80 91 62 00 	lds	r24, 0x0062
+  6e:	90 91 63 00 	lds	r25, 0x0063
+  72:	01 96       	adiw	r24, 0x01	; 1
+  74:	90 93 63 00 	sts	0x0063, r25
+  78:	80 93 62 00 	sts	0x0062, r24
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  7c:	8f ea       	ldi	r24, 0xAF	; 175
+  7e:	94 e0       	ldi	r25, 0x04	; 4
+  80:	01 97       	sbiw	r24, 0x01	; 1
+  82:	f1 f7       	brne	.-4      	; 0x80 <main+0x38>
+  84:	00 c0       	rjmp	.+0      	; 0x86 <main+0x3e>
+  86:	00 00       	nop
+		_delay_us(500);
+		/*
+		*	ISR RUNNING CHECKING FOR SYNC PULSES
+		*/
+		if(detected_A == 1){
+  88:	80 91 64 00 	lds	r24, 0x0064
+  8c:	90 91 65 00 	lds	r25, 0x0065
+  90:	01 97       	sbiw	r24, 0x01	; 1
+  92:	99 f4       	brne	.+38     	; 0xba <__stack+0x1b>
+			//charge = charge + jumpStep; // jumpStep = 100; [100ms]
+			
+			PORTB = PORTB | 0b011000; // PIN THAT TRIGGERS TRANSMITTER TO FIRE
+  94:	88 b3       	in	r24, 0x18	; 24
+  96:	88 61       	ori	r24, 0x18	; 24
+  98:	88 bb       	out	0x18, r24	; 24
+  9a:	80 ef       	ldi	r24, 0xF0	; 240
+  9c:	90 e0       	ldi	r25, 0x00	; 0
+  9e:	01 97       	sbiw	r24, 0x01	; 1
+  a0:	f1 f7       	brne	.-4      	; 0x9e <main+0x56>
+			_delay_us(100); // 0.1ms delay for Transmitter to check input register and fire
+			PORTB = PORTB & ~0b011000;
+  a2:	88 b3       	in	r24, 0x18	; 24
+  a4:	87 7e       	andi	r24, 0xE7	; 231
+  a6:	88 bb       	out	0x18, r24	; 24
+			charge=0;
+  a8:	10 92 63 00 	sts	0x0063, r1
+  ac:	10 92 62 00 	sts	0x0062, r1
+			detected_A = 0;
+  b0:	10 92 65 00 	sts	0x0065, r1
+  b4:	10 92 64 00 	sts	0x0064, r1
+  b8:	d8 cf       	rjmp	.-80     	; 0x6a <main+0x22>
+		}
+		else if(charge == maxCharge){ // maxCharge = 1000; [500ms]
+  ba:	20 91 62 00 	lds	r18, 0x0062
+  be:	30 91 63 00 	lds	r19, 0x0063
+  c2:	80 91 60 00 	lds	r24, 0x0060
+  c6:	90 91 61 00 	lds	r25, 0x0061
+  ca:	28 17       	cp	r18, r24
+  cc:	39 07       	cpc	r19, r25
+  ce:	69 f6       	brne	.-102    	; 0x6a <main+0x22>
+			PORTB = PORTB | 0b011000; // PIN THAT TRIGGERS TRANSMITTER TO FIRE
+  d0:	88 b3       	in	r24, 0x18	; 24
+  d2:	88 61       	ori	r24, 0x18	; 24
+  d4:	88 bb       	out	0x18, r24	; 24
+  d6:	80 ef       	ldi	r24, 0xF0	; 240
+  d8:	90 e0       	ldi	r25, 0x00	; 0
+  da:	01 97       	sbiw	r24, 0x01	; 1
+  dc:	f1 f7       	brne	.-4      	; 0xda <__stack+0x3b>
+			_delay_us(100); // 0.1ms delay for Transmitter to check input register and fire
+			PORTB = PORTB & ~0b011000;
+  de:	88 b3       	in	r24, 0x18	; 24
+  e0:	87 7e       	andi	r24, 0xE7	; 231
+  e2:	88 bb       	out	0x18, r24	; 24
+			charge = 0;
+  e4:	10 92 63 00 	sts	0x0063, r1
+  e8:	10 92 62 00 	sts	0x0062, r1
+  ec:	be cf       	rjmp	.-132    	; 0x6a <main+0x22>
+
+000000ee <__vector_2>:
+	}
+		
+return 1;
+}
+
+ISR (PCINT0_vect){  //Pin change interrupt vector		
+  ee:	1f 92       	push	r1
+  f0:	0f 92       	push	r0
+  f2:	0f b6       	in	r0, 0x3f	; 63
+  f4:	0f 92       	push	r0
+  f6:	11 24       	eor	r1, r1
+  f8:	2f 93       	push	r18
+  fa:	3f 93       	push	r19
+  fc:	8f 93       	push	r24
+  fe:	9f 93       	push	r25
+	inputStateA = PINB & 0b00000001; // << PB0 is the one we use for IRfly_R	
+ 100:	26 b3       	in	r18, 0x16	; 22
+ 102:	82 2f       	mov	r24, r18
+ 104:	81 70       	andi	r24, 0x01	; 1
+ 106:	90 e0       	ldi	r25, 0x00	; 0
+ 108:	90 93 6d 00 	sts	0x006D, r25
+ 10c:	80 93 6c 00 	sts	0x006C, r24
+	//PORTB ^= 0b00000100;		
+    if(inputStateA == 0b00000000){ // FALLING EDGE
+ 110:	00 97       	sbiw	r24, 0x00	; 0
+ 112:	f1 f4       	brne	.+60     	; 0x150 <__vector_2+0x62>
+		if((timingA_in_prog == 0)){
+ 114:	80 91 6a 00 	lds	r24, 0x006A
+ 118:	90 91 6b 00 	lds	r25, 0x006B
+ 11c:	89 2b       	or	r24, r25
+ 11e:	c9 f5       	brne	.+114    	; 0x192 <__vector_2+0xa4>
+			TCNT0=0;
+ 120:	12 be       	out	0x32, r1	; 50
+			pulseA_start=TCNT0;
+ 122:	82 b7       	in	r24, 0x32	; 50
+ 124:	90 e0       	ldi	r25, 0x00	; 0
+ 126:	90 93 69 00 	sts	0x0069, r25
+ 12a:	80 93 68 00 	sts	0x0068, r24
+			pulseA_length=0;
+ 12e:	10 92 67 00 	sts	0x0067, r1
+ 132:	10 92 66 00 	sts	0x0066, r1
+			timingA_in_prog = 1; //set flag for A
+ 136:	81 e0       	ldi	r24, 0x01	; 1
+ 138:	90 e0       	ldi	r25, 0x00	; 0
+ 13a:	90 93 6b 00 	sts	0x006B, r25
+ 13e:	80 93 6a 00 	sts	0x006A, r24
+		}
+	}
+	if(inputStateA == 0b00000001){ // RISING EDGE
+ 142:	80 91 6c 00 	lds	r24, 0x006C
+ 146:	90 91 6d 00 	lds	r25, 0x006D
+ 14a:	01 97       	sbiw	r24, 0x01	; 1
+ 14c:	49 f0       	breq	.+18     	; 0x160 <__vector_2+0x72>
+ 14e:	21 c0       	rjmp	.+66     	; 0x192 <__vector_2+0xa4>
+ 150:	01 97       	sbiw	r24, 0x01	; 1
+ 152:	f9 f4       	brne	.+62     	; 0x192 <__vector_2+0xa4>
+		if((timingA_in_prog == 1)){ 
+ 154:	80 91 6a 00 	lds	r24, 0x006A
+ 158:	90 91 6b 00 	lds	r25, 0x006B
+ 15c:	01 97       	sbiw	r24, 0x01	; 1
+ 15e:	c9 f4       	brne	.+50     	; 0x192 <__vector_2+0xa4>
+			pulseA_length = TCNT0 - pulseA_start;
+ 160:	82 b7       	in	r24, 0x32	; 50
+ 162:	90 e0       	ldi	r25, 0x00	; 0
+ 164:	20 91 68 00 	lds	r18, 0x0068
+ 168:	30 91 69 00 	lds	r19, 0x0069
+ 16c:	82 1b       	sub	r24, r18
+ 16e:	93 0b       	sbc	r25, r19
+ 170:	90 93 67 00 	sts	0x0067, r25
+ 174:	80 93 66 00 	sts	0x0066, r24
+			timingA_in_prog = 0; //clear flag for A
+ 178:	10 92 6b 00 	sts	0x006B, r1
+ 17c:	10 92 6a 00 	sts	0x006A, r1
+					
+			if((pulseA_length <= 26) && (pulseA_length >= 20)){
+ 180:	44 97       	sbiw	r24, 0x14	; 20
+ 182:	07 97       	sbiw	r24, 0x07	; 7
+ 184:	30 f4       	brcc	.+12     	; 0x192 <__vector_2+0xa4>
+				detected_A=1;
+ 186:	81 e0       	ldi	r24, 0x01	; 1
+ 188:	90 e0       	ldi	r25, 0x00	; 0
+ 18a:	90 93 65 00 	sts	0x0065, r25
+ 18e:	80 93 64 00 	sts	0x0064, r24
+			}
+		}
+	}
+	//Flip status pin again so it doesn't get too bright or stay on
+	//PORTB ^= 0b00000100;		
+}
+ 192:	9f 91       	pop	r25
+ 194:	8f 91       	pop	r24
+ 196:	3f 91       	pop	r19
+ 198:	2f 91       	pop	r18
+ 19a:	0f 90       	pop	r0
+ 19c:	0f be       	out	0x3f, r0	; 63
+ 19e:	0f 90       	pop	r0
+ 1a0:	1f 90       	pop	r1
+ 1a2:	18 95       	reti
+
+000001a4 <_exit>:
+ 1a4:	f8 94       	cli
+
+000001a6 <__stop_program>:
+ 1a6:	ff cf       	rjmp	.-2      	; 0x1a6 <__stop_program>
